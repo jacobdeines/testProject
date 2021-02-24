@@ -3,9 +3,9 @@
 
 typedef struct
 {
-	float x;
-	float y;
-	float z;
+	int x;
+	int y;
+	int z;
 } Point;
 
 typedef struct
@@ -17,9 +17,9 @@ typedef struct
 //Euler angles in 3D space
 typedef struct
 {
-	float alpha;
-	float beta;
-	float gamma;
+	int roll;
+	int pitch;
+	int yaw;
 } Angle;
 
 typedef struct
@@ -31,17 +31,21 @@ typedef struct
 class CubeClass
 {
 	public:
-		CubeClass(float size, Location location);
+		CubeClass(int size, Location location);
 		~CubeClass();
-		float GetSize();
+		int GetSize();
 		Location GetLocation();
 
 		Point *GetVertices();
 		Line *GetEdges();
 
 	private:
-		float size;
+		int size;
 		Location location;
+		Point vertices[8];
+		Line edges[12];
+
+		void updateCube();
 };
 
 #endif
