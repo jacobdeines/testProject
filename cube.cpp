@@ -69,4 +69,14 @@ void CubeClass::updateCube()
 	vertices[5] = {location.position.x + size, location.position.y, location.position.z + size};
 	vertices[6] = {location.position.x, location.position.y + size, location.position.z + size};
 	vertices[7] = {location.position.x + size, location.position.y + size, location.position.z + size};
+
+	//Update vertices based on angle
+	// vertices[0] stays the same
+	//vertices[1] = {location.position.x + size, location.position.y, location.position.z};
+	//vertices[2] = {location.position.x, location.position.y + size, location.position.z};
+	//vertices[3] = {location.position.x + size, location.position.y + size, location.position.z};
+	//vertices[4] = {location.position.x, location.position.y, location.position.z + size};
+	//vertices[5] = {location.position.x + size, location.position.y, location.position.z + size};
+	//vertices[6] = {location.position.x, location.position.y + size, location.position.z + size};
+	//vertices[7] = {location.position.x + size, location.position.y + size, location.position.z + size};
 }

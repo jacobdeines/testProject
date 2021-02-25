@@ -60,7 +60,7 @@ int main()
         {
             redraw = true;
         }
-        else if(event.type == ALLEGRO_EVENT_KEY_DOWN)
+        else if(event.type == ALLEGRO_EVENT_KEY_CHAR)
         {
             switch(event.keyboard.keycode)
             {
