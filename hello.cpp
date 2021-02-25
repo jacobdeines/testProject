@@ -10,10 +10,12 @@
 
 void drawCube(CubeClass cube);
 
-int width = 0;
-int height = 0;
+int width = 1000;
+int height = 600;
+int speed = 10;
 int size = 0;
 int thickness = 0;
+const double alpha = 45 * (M_PI/180); //in radians
 
 int main()
 {
@@ -24,7 +26,7 @@ int main()
 
     ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
-    ALLEGRO_DISPLAY* disp = al_create_display(640, 480);
+    ALLEGRO_DISPLAY* disp = al_create_display(width, height);
     ALLEGRO_FONT* font = al_create_builtin_font();
 
     al_register_event_source(queue, al_get_keyboard_event_source());
@@ -34,18 +36,19 @@ int main()
     bool redraw = true;
     ALLEGRO_EVENT event;
 
-    width = al_get_display_width(disp);
     std::cout << "width = " << width << "\n";
-    height = al_get_display_height(disp);
     std::cout << "height = " << height << "\n";
 
-    Angle angle = {0, 0, 0};
-    Point origin = {width/2, 0, height/2};
-    Location location = {origin, angle};
-
-    size = (std::min(width, height))/4;
-    thickness = 3;
+    size = height/8;
     std::cout << "size = " << size << "\n";
+
+    thickness = 2;
+
+    Angle angle = {0, 0, 0};
+    Point origin = {0, 0, 0};
+    Point start = {size*4, 0, 0};
+    Location location = {start, angle};
+    
     CubeClass cube(size, location);
 
     al_start_timer(timer);
@@ -59,6 +62,24 @@ int main()
         }
         else if(event.type == ALLEGRO_EVENT_KEY_DOWN)
         {
+            switch(event.keyboard.keycode)
+            {
+                case ALLEGRO_KEY_DOWN:
+                    cube.Translate({0,0,-1*speed});
+                break;
+
+                case ALLEGRO_KEY_UP:
+                    cube.Translate({0,0,1*speed});
+                break;
+
+                case ALLEGRO_KEY_LEFT:
+                    cube.Translate({-1*speed,0,0});
+                break;
+
+                case ALLEGRO_KEY_RIGHT:
+                    cube.Translate({1*speed,0,0});
+                break;
+            }
             redraw = true;
         }
         else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -72,6 +93,11 @@ int main()
 
             //HELLO TEXT
             //al_draw_text(font, al_map_rgb(0, 0, 255), width/2, height/2, 0, "Hello!");
+
+            //AXES
+            al_draw_line(0, height, width, height, al_map_rgb(255, 0, 0),thickness*2);
+            al_draw_line(0, height, height, 0, al_map_rgb(255, 0, 0),thickness*2);
+            al_draw_line(0, height, 0, 0, al_map_rgb(255, 0, 0),thickness*2);
 
             //CUBE
             drawCube(cube);
@@ -93,24 +119,33 @@ int main()
 void drawCube(CubeClass cube)
 {
     Location location = cube.GetLocation();
+    Point *points3D = cube.GetVertices();
     Line *edges = cube.GetEdges();
 
     int roll = location.orientation.roll;
     int pitch = location.orientation.pitch;
     int yaw = location.orientation.yaw;
 
-    //convert 3D edges into 2D drawing
+    //Initialize 2D points array
+    Point points2D[8];
+    for (int i = 0; i < 8; ++i)
+    {
+        points2D[i] = {0,height,0}; //We will just ignore the Z value when thinking in 2D, only x and y
+    }
+
+    //convert 3D points into 2D points
+    for (int i = 0; i < 8; ++i)
+    {
+        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        points2D[i].y = points3D[i].y + 0.5*(points3D[i].z)*sin(alpha);
+    }
+
+    //plot edges between 2D points
     for (int i = 0; i < 12; ++i)
     {
-        if ((edges.pointA.y == 0) && (edges.pointB.y == 0))
+        if(i != 2 && i != 8 && i != 9)
         {
-            al_draw_line(edges[i].pointA.x, (height - edges[i].pointA.z), edges[i].pointB.x, (height - edges[i].pointB.z), al_map_rgb(255, 0, 0),thickness);
-        }
-
-        else
-        {
-            
-        }
-        
+            al_draw_line(points2D[edges[i].pointA].x, (height - points2D[edges[i].pointA].y), points2D[edges[i].pointB].x, (height - points2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+        }   
     }
 }

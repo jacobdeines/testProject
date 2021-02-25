@@ -5,13 +5,13 @@ typedef struct
 {
 	int x;
 	int y;
-	int z;
+	int z;	//Optional, not used if in 2D on the screen
 } Point;
 
 typedef struct
 {
-	Point pointA;
-	Point pointB;
+	int pointA;
+	int pointB;
 } Line;
 
 //Euler angles in 3D space
@@ -38,6 +38,8 @@ class CubeClass
 
 		Point *GetVertices();
 		Line *GetEdges();
+
+		void Translate(Point move);
 
 	private:
 		int size;
