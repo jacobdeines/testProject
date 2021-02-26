@@ -12,9 +12,10 @@ void drawCube(CubeClass cube);
 
 int width = 1000;
 int height = 600;
-int speed = 10;
-int size = 0;
-int thickness = 0;
+int size = height/16;
+int speed = size;
+int thickness = 2;
+
 const double alpha = 45 * (M_PI/180); //in radians
 
 int main()
@@ -38,11 +39,7 @@ int main()
 
     std::cout << "width = " << width << "\n";
     std::cout << "height = " << height << "\n";
-
-    size = height/8;
     std::cout << "size = " << size << "\n";
-
-    thickness = 2;
 
     Angle angle = {0, 0, 0};
     Point origin = {0, 0, 0};
@@ -143,9 +140,9 @@ void drawCube(CubeClass cube)
     //plot edges between 2D points
     for (int i = 0; i < 12; ++i)
     {
-        if(i != 2 && i != 8 && i != 9)
-        {
+        //if(i != 2 && i != 8 && i != 9)
+        //{
             al_draw_line(points2D[edges[i].pointA].x, (height - points2D[edges[i].pointA].y), points2D[edges[i].pointB].x, (height - points2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
-        }   
+        //}   
     }
 }
