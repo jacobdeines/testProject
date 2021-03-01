@@ -17,9 +17,9 @@ typedef struct
 //Euler angles in 3D space
 typedef struct
 {
-	int roll;
-	int pitch;
-	int yaw;
+	double roll;
+	double pitch;
+	double yaw;
 } Angle;
 
 typedef struct

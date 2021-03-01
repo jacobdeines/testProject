@@ -96,6 +96,22 @@ int main()
             al_draw_line(0, height, height, 0, al_map_rgb(255, 0, 0),thickness*2);
             al_draw_line(0, height, 0, 0, al_map_rgb(255, 0, 0),thickness*2);
 
+            //Grid
+            float loc = size;
+            while(loc < width)
+            {
+                al_draw_line(0 + loc, height, height + loc, 0, al_map_rgb(255, 0, 0),0);
+                loc += size;
+            }
+            float locX = 0.5*(size)*cos(alpha);
+            float locY = height - 0.5*(size)*sin(alpha);
+            while(locY > 0)
+            {
+                al_draw_line(0 + locX, locY, width, locY, al_map_rgb(255, 0, 0),0);
+                locX += 0.5*(size)*cos(alpha);
+                locY -= 0.5*(size)*sin(alpha);
+            }
+
             //CUBE
             drawCube(cube);
 
@@ -115,13 +131,8 @@ int main()
 
 void drawCube(CubeClass cube)
 {
-    Location location = cube.GetLocation();
     Point *points3D = cube.GetVertices();
     Line *edges = cube.GetEdges();
-
-    int roll = location.orientation.roll;
-    int pitch = location.orientation.pitch;
-    int yaw = location.orientation.yaw;
 
     //Initialize 2D points array
     Point points2D[8];
