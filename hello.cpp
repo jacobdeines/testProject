@@ -131,6 +131,7 @@ int main()
 
 void drawCube(CubeClass cube)
 {
+    Location loc = cube.GetLocation();
     Point *points3D = cube.GetVertices();
     Line *edges = cube.GetEdges();
 
@@ -151,9 +152,30 @@ void drawCube(CubeClass cube)
     //plot edges between 2D points
     for (int i = 0; i < 12; ++i)
     {
-        //if(i != 2 && i != 8 && i != 9)
-        //{
+        if(i != 2 && i != 8 && i != 9)
+        {
             al_draw_line(points2D[edges[i].pointA].x, (height - points2D[edges[i].pointA].y), points2D[edges[i].pointB].x, (height - points2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
-        //}   
+        }   
     }
+
+    if(loc.position.y)
+    {
+        //convert 3D points into 2D points, but 0 out y value
+        int i = 0;
+        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        points2D[i].y = 0.5*(points3D[i].z)*sin(alpha);
+
+        i = 1;
+        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        points2D[i].y = 0.5*(points3D[i].z)*sin(alpha);
+
+        i = 4;
+        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        points2D[i].y = 0.5*(points3D[i].z)*sin(alpha);
+
+        i = 5;
+        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        points2D[i].y = 0.5*(points3D[i].z)*sin(alpha);
+    }
+
 }
