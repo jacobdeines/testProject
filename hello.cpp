@@ -76,6 +76,14 @@ int main()
                 case ALLEGRO_KEY_RIGHT:
                     cube.Translate({1*speed,0,0});
                 break;
+
+                case ALLEGRO_KEY_PAD_8:
+                    cube.Translate({0,1*speed,0});
+                break;
+
+                case ALLEGRO_KEY_PAD_2:
+                    cube.Translate({0,-1*speed,0});
+                break;
             }
             redraw = true;
         }
@@ -152,30 +160,48 @@ void drawCube(CubeClass cube)
     //plot edges between 2D points
     for (int i = 0; i < 12; ++i)
     {
-        if(i != 2 && i != 8 && i != 9)
-        {
+        //if(i != 2 && i != 8 && i != 9)
+        //{
             al_draw_line(points2D[edges[i].pointA].x, (height - points2D[edges[i].pointA].y), points2D[edges[i].pointB].x, (height - points2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
-        }   
+        //}   
     }
 
-    if(loc.position.y)
+    if(loc.position.y != 0)
     {
+        //Initialize 2D points array
+        Point pointsProjection2D[4];
+        for (int i = 0; i < 4; ++i)
+        {
+            pointsProjection2D[i] = {0,height,0}; //We will just ignore the Z value when thinking in 2D, only x and y
+        }
+
         //convert 3D points into 2D points, but 0 out y value
         int i = 0;
-        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
-        points2D[i].y = 0.5*(points3D[i].z)*sin(alpha);
+        pointsProjection2D[0].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        pointsProjection2D[0].y = 0.5*(points3D[i].z)*sin(alpha);
 
         i = 1;
-        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
-        points2D[i].y = 0.5*(points3D[i].z)*sin(alpha);
+        pointsProjection2D[1].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        pointsProjection2D[1].y = 0.5*(points3D[i].z)*sin(alpha);
 
         i = 4;
-        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
-        points2D[i].y = 0.5*(points3D[i].z)*sin(alpha);
+        pointsProjection2D[2].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        pointsProjection2D[2].y = 0.5*(points3D[i].z)*sin(alpha);
 
         i = 5;
-        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
-        points2D[i].y = 0.5*(points3D[i].z)*sin(alpha);
-    }
+        pointsProjection2D[3].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        pointsProjection2D[3].y = 0.5*(points3D[i].z)*sin(alpha);
 
+        i = 0;
+        al_draw_line(pointsProjection2D[edges[i].pointA].x, (height - pointsProjection2D[edges[i].pointA].y), pointsProjection2D[edges[i].pointB].x, (height - pointsProjection2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+    
+        i = 1;
+        al_draw_line(pointsProjection2D[edges[i].pointA].x, (height - pointsProjection2D[edges[i].pointA].y), pointsProjection2D[edges[i].pointB].x, (height - pointsProjection2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+
+        i = 3;
+        al_draw_line(pointsProjection2D[edges[i].pointA].x, (height - pointsProjection2D[edges[i].pointA].y), pointsProjection2D[edges[i].pointB].x, (height - pointsProjection2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+
+        i = 8;
+        al_draw_line(pointsProjection2D[edges[i].pointA].x, (height - pointsProjection2D[edges[i].pointA].y), pointsProjection2D[edges[i].pointB].x, (height - pointsProjection2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+    }
 }
