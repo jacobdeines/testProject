@@ -11,15 +11,17 @@
 void drawGrid();
 void drawCube(CubeClass cube);
 
-const int size = 30;
-const int MAX = size * 20;
+const int size = 50;
+const int num = 10;
+
+const int MAX = size * num;
 const int height = MAX + MAX/2;
 const int width = MAX + MAX/2;
 const int speed = size;
-const int thickness = 2;
+const int thickness = 4;
 
-const int max_alpha_deg = 90;
-const int min_alpha_deg = 10;
+const int max_alpha_deg = 179;
+const int min_alpha_deg = 1;
 const int default_alpha_deg = 45;
 int alpha_deg = default_alpha_deg;
 double alpha = alpha_deg * (M_PI/180); //in radians
@@ -151,7 +153,7 @@ int main()
 
         if(redraw && al_is_event_queue_empty(queue))
         {
-            al_clear_to_color(al_map_rgb(0, 0, 0));
+            al_clear_to_color(al_map_rgb(255, 255, 255));
 
             alpha = alpha_deg * (M_PI/180);
 
@@ -178,22 +180,23 @@ void drawGrid()
     //AXES
     float axis_x = 0.5*((float)MAX)*cos(alpha);
     float axis_y = 0.5*((float)MAX)*sin(alpha);
-    al_draw_line(0, height, MAX, height, al_map_rgb(255, 0, 0),thickness*2);
-    al_draw_line(0, height, axis_x, height - axis_y, al_map_rgb(255, 0, 0),thickness*2);
-    al_draw_line(0, height, 0, height - MAX, al_map_rgb(255, 0, 0),thickness*2);
+    al_draw_line(0, height, MAX, height, al_map_rgb(0, 0, 0),thickness*2);
+    al_draw_line(0, height, axis_x, height - axis_y, al_map_rgb(0, 0, 0),thickness*2);
+    al_draw_line(0, height, 0, height - MAX, al_map_rgb(0, 0, 0),thickness*2);
 
     //Grid
     float loc = size;
     while(loc <= MAX)
     {
-        al_draw_line(loc, height, axis_x + loc, height - axis_y, al_map_rgb(255, 0, 0),0);
+        al_draw_line(loc, height, axis_x + loc, height - axis_y, al_map_rgb(0, 0, 0),0);
         loc += size;
     }
+
     float locX = 0.5*(size)*cos(alpha);
     float locY = height - 0.5*(size)*sin(alpha);
     while(locY >= (height - axis_y - (0.01 * axis_y)))
     {
-        al_draw_line(locX, locY, locX + MAX, locY, al_map_rgb(255, 0, 0),0);
+        al_draw_line(locX, locY, locX + MAX, locY, al_map_rgb(0, 0, 0),0);
         locX += 0.5*(size)*cos(alpha);
         locY -= 0.5*(size)*sin(alpha);
     }
@@ -218,6 +221,15 @@ void drawCube(CubeClass cube)
         points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
         points2D[i].y = points3D[i].y + 0.5*(points3D[i].z)*sin(alpha);
     }
+
+    float points1[8] = { (float)points2D[0].x, (float)(height - points2D[0].y), (float)points2D[1].x, (float)(height - points2D[1].y), (float)points2D[3].x, (float)(height - points2D[3].y), (float)points2D[2].x, (float)(height - (float)points2D[2].y) };
+    al_draw_filled_polygon(points1, 4, al_map_rgb(0, 200, 0));
+
+    float points2[8] = { (float)points2D[1].x, (float)(height - points2D[1].y), (float)points2D[5].x, (float)(height - points2D[5].y), (float)points2D[7].x, (float)(height - points2D[7].y), (float)points2D[3].x, (float)(height - (float)points2D[3].y) };
+    al_draw_filled_polygon(points2, 4, al_map_rgb(0, 150, 0));
+
+    float points3[8] = { (float)points2D[2].x, (float)(height - points2D[2].y), (float)points2D[3].x, (float)(height - points2D[3].y), (float)points2D[7].x, (float)(height - points2D[7].y), (float)points2D[6].x, (float)(height - (float)points2D[6].y) };
+    al_draw_filled_polygon(points3, 4, al_map_rgb(0, 100, 0));
 
     //plot edges between 2D points
     for (int i = 0; i < 12; ++i)
@@ -261,5 +273,8 @@ void drawCube(CubeClass cube)
         al_draw_line(pointsProjection2D[1].x, (height - pointsProjection2D[1].y), pointsProjection2D[3].x, (height - pointsProjection2D[3].y), al_map_rgb(0, 255, 0),thickness);
 
         al_draw_line(pointsProjection2D[2].x, (height - pointsProjection2D[2].y), pointsProjection2D[3].x, (height - pointsProjection2D[3].y), al_map_rgb(0, 255, 0),thickness);
+    
+        float points4[8] = { (float)pointsProjection2D[0].x, (float)(height - pointsProjection2D[0].y), (float)pointsProjection2D[1].x, (float)(height - pointsProjection2D[1].y), (float)pointsProjection2D[3].x, (float)(height - pointsProjection2D[3].y), (float)pointsProjection2D[2].x, (float)(height - (float)pointsProjection2D[2].y) };
+        al_draw_filled_polygon(points4, 4, al_map_rgb(0, 100, 0));
     }
 }
