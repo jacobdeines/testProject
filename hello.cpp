@@ -8,13 +8,15 @@
 
 #include "geo.h"
 
+void drawGrid();
 void drawCube(CubeClass cube);
 
-int width = 1000;
-int height = 600;
-int size = height/16;
-int speed = size;
-int thickness = 2;
+const int size = 30;
+const int MAX = size * 20;
+const int height = MAX + MAX/2;
+const int width = MAX + MAX/2;
+const int speed = size;
+const int thickness = 2;
 
 const double alpha = 45 * (M_PI/180); //in radians
 
@@ -62,27 +64,63 @@ int main()
             switch(event.keyboard.keycode)
             {
                 case ALLEGRO_KEY_DOWN:
+                {
                     cube.Translate({0,0,-1*speed});
+                    if(cube.GetLocation().position.z < 0)
+                    {
+                        cube.SetPositionZ(0);
+                    }
+                }
                 break;
 
                 case ALLEGRO_KEY_UP:
+                {
                     cube.Translate({0,0,1*speed});
+                    if(cube.GetLocation().position.z > MAX-size)
+                    {
+                        cube.SetPositionZ(MAX-size);
+                    }
+                }
                 break;
 
                 case ALLEGRO_KEY_LEFT:
+                {
                     cube.Translate({-1*speed,0,0});
+                    if(cube.GetLocation().position.x < 0)
+                    {
+                        cube.SetPositionX(0);
+                    }
+                }
                 break;
 
                 case ALLEGRO_KEY_RIGHT:
+                {
                     cube.Translate({1*speed,0,0});
-                break;
-
-                case ALLEGRO_KEY_PAD_8:
-                    cube.Translate({0,1*speed,0});
+                    if(cube.GetLocation().position.x > MAX-size)
+                    {
+                        cube.SetPositionX(MAX-size);
+                    }
+                }
                 break;
 
                 case ALLEGRO_KEY_PAD_2:
+                {
                     cube.Translate({0,-1*speed,0});
+                    if(cube.GetLocation().position.y < 0)
+                    {
+                        cube.SetPositionY(0);
+                    }
+                }
+                break;
+
+                case ALLEGRO_KEY_PAD_8:
+                {
+                    cube.Translate({0,1*speed,0});
+                    if(cube.GetLocation().position.y > MAX-size)
+                    {
+                        cube.SetPositionY(MAX-size);
+                    }
+                }
                 break;
             }
             redraw = true;
@@ -99,26 +137,8 @@ int main()
             //HELLO TEXT
             //al_draw_text(font, al_map_rgb(0, 0, 255), width/2, height/2, 0, "Hello!");
 
-            //AXES
-            al_draw_line(0, height, width, height, al_map_rgb(255, 0, 0),thickness*2);
-            al_draw_line(0, height, height, 0, al_map_rgb(255, 0, 0),thickness*2);
-            al_draw_line(0, height, 0, 0, al_map_rgb(255, 0, 0),thickness*2);
-
-            //Grid
-            float loc = size;
-            while(loc < width)
-            {
-                al_draw_line(0 + loc, height, height + loc, 0, al_map_rgb(255, 0, 0),0);
-                loc += size;
-            }
-            float locX = 0.5*(size)*cos(alpha);
-            float locY = height - 0.5*(size)*sin(alpha);
-            while(locY > 0)
-            {
-                al_draw_line(0 + locX, locY, width, locY, al_map_rgb(255, 0, 0),0);
-                locX += 0.5*(size)*cos(alpha);
-                locY -= 0.5*(size)*sin(alpha);
-            }
+            //GRID
+            drawGrid();
 
             //CUBE
             drawCube(cube);
@@ -135,6 +155,32 @@ int main()
     al_destroy_event_queue(queue);
 
     return 0;
+}
+
+void drawGrid()
+{
+    //AXES
+    float axis_x = 0.5*((float)MAX)*cos(alpha);
+    float axis_y = 0.5*((float)MAX)*sin(alpha);
+    al_draw_line(0, height, MAX, height, al_map_rgb(255, 0, 0),thickness*2);
+    al_draw_line(0, height, axis_x, height - axis_y, al_map_rgb(255, 0, 0),thickness*2);
+    al_draw_line(0, height, 0, height - MAX, al_map_rgb(255, 0, 0),thickness*2);
+
+    //Grid
+    float loc = size;
+    while(loc <= MAX)
+    {
+        al_draw_line(loc, height, axis_x + loc, height - axis_y, al_map_rgb(255, 0, 0),0);
+        loc += size;
+    }
+    float locX = 0.5*(size)*cos(alpha);
+    float locY = height - 0.5*(size)*sin(alpha);
+    while(locY >= (height - axis_y - (0.01 * axis_y)))
+    {
+        al_draw_line(locX, locY, locX + MAX, locY, al_map_rgb(255, 0, 0),0);
+        locX += 0.5*(size)*cos(alpha);
+        locY -= 0.5*(size)*sin(alpha);
+    }
 }
 
 void drawCube(CubeClass cube)

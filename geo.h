@@ -40,6 +40,10 @@ class CubeClass
 		Line *GetEdges();
 
 		void Translate(Point move);
+		void SetPosition(Point pos);
+		void SetPositionX(int pos);
+		void SetPositionY(int pos);
+		void SetPositionZ(int pos);
 
 	private:
 		int size;

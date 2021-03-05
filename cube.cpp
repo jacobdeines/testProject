@@ -58,6 +58,36 @@ void CubeClass::Translate(Point move)
 	updateCube();
 }
 
+void CubeClass::SetPosition(Point pos)
+{
+	location.position.x = pos.x;
+	location.position.y = pos.y;
+	location.position.z = pos.z;
+
+	updateCube();
+}
+
+void CubeClass::SetPositionX(int pos)
+{
+	location.position.x = pos;
+
+	updateCube();
+}
+
+void CubeClass::SetPositionY(int pos)
+{
+	location.position.y = pos;
+
+	updateCube();
+}
+
+void CubeClass::SetPositionZ(int pos)
+{
+	location.position.z = pos;
+
+	updateCube();
+}
+
 void CubeClass::updateCube()
 {
 	//Set vertices
@@ -71,7 +101,7 @@ void CubeClass::updateCube()
 	vertices[7] = {location.position.x + size, location.position.y + size, location.position.z + size};
 
 	//Update vertices based on angle
-	// vertices[0] stays the same
+	//vertices[0] stays the same
 	//vertices[1] = {location.position.x + size, location.position.y, location.position.z};
 	//vertices[2] = {location.position.x, location.position.y + size, location.position.z};
 	//vertices[3] = {location.position.x + size, location.position.y + size, location.position.z};
