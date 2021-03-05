@@ -18,7 +18,11 @@ const int width = MAX + MAX/2;
 const int speed = size;
 const int thickness = 2;
 
-const double alpha = 45 * (M_PI/180); //in radians
+const int max_alpha_deg = 90;
+const int min_alpha_deg = 10;
+const int default_alpha_deg = 45;
+int alpha_deg = default_alpha_deg;
+double alpha = alpha_deg * (M_PI/180); //in radians
 
 int main()
 {
@@ -39,13 +43,8 @@ int main()
     bool redraw = true;
     ALLEGRO_EVENT event;
 
-    std::cout << "width = " << width << "\n";
-    std::cout << "height = " << height << "\n";
-    std::cout << "size = " << size << "\n";
-
     Angle angle = {0, 0, 0};
-    Point origin = {0, 0, 0};
-    Point start = {size*4, 0, 0};
+    Point start = {0, 0, 0};
     Location location = {start, angle};
     
     CubeClass cube(size, location);
@@ -122,6 +121,26 @@ int main()
                     }
                 }
                 break;
+
+                case ALLEGRO_KEY_PAD_4:
+                {
+                    alpha_deg = alpha_deg + 1;
+                    if(alpha_deg > max_alpha_deg)
+                    {
+                        alpha_deg = max_alpha_deg;
+                    }
+                }
+                break;
+
+                case ALLEGRO_KEY_PAD_6:
+                {
+                    alpha_deg = alpha_deg - 1;
+                    if(alpha_deg < min_alpha_deg)
+                    {
+                        alpha_deg = min_alpha_deg;
+                    }
+                }
+                break;
             }
             redraw = true;
         }
@@ -134,13 +153,10 @@ int main()
         {
             al_clear_to_color(al_map_rgb(0, 0, 0));
 
-            //HELLO TEXT
-            //al_draw_text(font, al_map_rgb(0, 0, 255), width/2, height/2, 0, "Hello!");
+            alpha = alpha_deg * (M_PI/180);
 
-            //GRID
             drawGrid();
 
-            //CUBE
             drawCube(cube);
 
             al_flip_display();
