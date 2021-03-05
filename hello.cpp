@@ -160,10 +160,10 @@ void drawCube(CubeClass cube)
     //plot edges between 2D points
     for (int i = 0; i < 12; ++i)
     {
-        //if(i != 2 && i != 8 && i != 9)
-        //{
+        if(i != 2 && i != 8 && i != 9)
+        {
             al_draw_line(points2D[edges[i].pointA].x, (height - points2D[edges[i].pointA].y), points2D[edges[i].pointB].x, (height - points2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
-        //}   
+        }   
     }
 
     if(loc.position.y != 0)
@@ -192,16 +192,12 @@ void drawCube(CubeClass cube)
         pointsProjection2D[3].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
         pointsProjection2D[3].y = 0.5*(points3D[i].z)*sin(alpha);
 
-        i = 0;
-        al_draw_line(pointsProjection2D[edges[i].pointA].x, (height - pointsProjection2D[edges[i].pointA].y), pointsProjection2D[edges[i].pointB].x, (height - pointsProjection2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+        al_draw_line(pointsProjection2D[0].x, (height - pointsProjection2D[0].y), pointsProjection2D[1].x, (height - pointsProjection2D[1].y), al_map_rgb(0, 255, 0),thickness);
     
-        i = 1;
-        al_draw_line(pointsProjection2D[edges[i].pointA].x, (height - pointsProjection2D[edges[i].pointA].y), pointsProjection2D[edges[i].pointB].x, (height - pointsProjection2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+        al_draw_line(pointsProjection2D[0].x, (height - pointsProjection2D[0].y), pointsProjection2D[2].x, (height - pointsProjection2D[2].y), al_map_rgb(0, 255, 0),thickness);
 
-        i = 3;
-        al_draw_line(pointsProjection2D[edges[i].pointA].x, (height - pointsProjection2D[edges[i].pointA].y), pointsProjection2D[edges[i].pointB].x, (height - pointsProjection2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+        al_draw_line(pointsProjection2D[1].x, (height - pointsProjection2D[1].y), pointsProjection2D[3].x, (height - pointsProjection2D[3].y), al_map_rgb(0, 255, 0),thickness);
 
-        i = 8;
-        al_draw_line(pointsProjection2D[edges[i].pointA].x, (height - pointsProjection2D[edges[i].pointA].y), pointsProjection2D[edges[i].pointB].x, (height - pointsProjection2D[edges[i].pointB].y), al_map_rgb(0, 255, 0),thickness);
+        al_draw_line(pointsProjection2D[2].x, (height - pointsProjection2D[2].y), pointsProjection2D[3].x, (height - pointsProjection2D[3].y), al_map_rgb(0, 255, 0),thickness);
     }
 }
