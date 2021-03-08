@@ -32,7 +32,7 @@ const int width = MAX + MAX/2;
 const int speed = size;
 const int thickness = 4;
 
-const int max_alpha_deg = 179;
+const int max_alpha_deg = 90;
 const int min_alpha_deg = 1;
 const int default_alpha_deg = 45;
 int alpha_deg = default_alpha_deg;
@@ -273,11 +273,11 @@ void drawGrid()
     }
 }
 
-void drawPlacedCube(CubeClass cube)
+void drawPlacedCube(CubeClass thisCube)
 {
-    Location loc = cube.GetLocation();
-    Point *points3D = cube.GetVertices();
-    Line *edges = cube.GetEdges();
+    Location loc = thisCube.GetLocation();
+    Point *points3D = thisCube.GetVertices();
+    Line *edges = thisCube.GetEdges();
 
     //Initialize 2D points array
     Point points2D[8];
