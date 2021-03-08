@@ -75,7 +75,7 @@ int main()
         {
             switch(event.keyboard.keycode)
             {
-                case ALLEGRO_KEY_DOWN:
+                case ALLEGRO_KEY_S:
                 {
                     cube.Translate({0,0,-1*speed});
                     if(cube.GetLocation().position.z < 0)
@@ -85,7 +85,7 @@ int main()
                 }
                 break;
 
-                case ALLEGRO_KEY_UP:
+                case ALLEGRO_KEY_W:
                 {
                     cube.Translate({0,0,1*speed});
                     if(cube.GetLocation().position.z > MAX-size)
@@ -95,7 +95,7 @@ int main()
                 }
                 break;
 
-                case ALLEGRO_KEY_LEFT:
+                case ALLEGRO_KEY_A:
                 {
                     cube.Translate({-1*speed,0,0});
                     if(cube.GetLocation().position.x < 0)
@@ -105,7 +105,7 @@ int main()
                 }
                 break;
 
-                case ALLEGRO_KEY_RIGHT:
+                case ALLEGRO_KEY_D:
                 {
                     cube.Translate({1*speed,0,0});
                     if(cube.GetLocation().position.x > MAX-size)
@@ -115,7 +115,7 @@ int main()
                 }
                 break;
 
-                case ALLEGRO_KEY_PAD_2:
+                case ALLEGRO_KEY_DOWN:
                 {
                     cube.Translate({0,-1*speed,0});
                     if(cube.GetLocation().position.y < 0)
@@ -125,7 +125,7 @@ int main()
                 }
                 break;
 
-                case ALLEGRO_KEY_PAD_8:
+                case ALLEGRO_KEY_UP:
                 {
                     cube.Translate({0,1*speed,0});
                     if(cube.GetLocation().position.y > MAX-size)
@@ -135,7 +135,7 @@ int main()
                 }
                 break;
 
-                case ALLEGRO_KEY_PAD_4:
+                case ALLEGRO_KEY_LEFT:
                 {
                     alpha_deg = alpha_deg + 1;
                     if(alpha_deg > max_alpha_deg)
@@ -145,7 +145,7 @@ int main()
                 }
                 break;
 
-                case ALLEGRO_KEY_PAD_6:
+                case ALLEGRO_KEY_RIGHT:
                 {
                     alpha_deg = alpha_deg - 1;
                     if(alpha_deg < min_alpha_deg)
