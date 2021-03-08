@@ -19,10 +19,12 @@
 #define STEEL_BLUE      al_map_rgb(70, 130, 180)
 
 void drawGrid();
-void drawCube(CubeClass cube);
+void drawCubes();
+void drawPlacedCube(CubeClass cube);
+void drawPlayerCube();
 
-const int size = 40;
-const int num = 12;
+const int size = 80;
+const int num = 5;
 
 const int MAX = size * num;
 const int height = MAX + MAX/2;
@@ -35,6 +37,21 @@ const int min_alpha_deg = 1;
 const int default_alpha_deg = 45;
 int alpha_deg = default_alpha_deg;
 double alpha = alpha_deg * (M_PI/180); //in radians
+
+//          X    Y    Z
+char spaces[num][num][num];
+// 0 = nothing
+// 1 = player cube
+// 2 = placed cube
+
+char playerX = 0;
+char playerY = 0;
+char playerZ = 0;
+
+Angle angle = {0, 0, 0};
+Point start = {0, 0, 0};
+Location location = {start, angle};
+CubeClass cube(size, location);
 
 int main()
 {
@@ -55,12 +72,18 @@ int main()
     bool redraw = true;
     ALLEGRO_EVENT event;
 
-    Angle angle = {0, 0, 0};
-    Point start = {0, 0, 0};
-    Location location = {start, angle};
-    
-    CubeClass cube(size, location);
-    CubeClass cubes[2] = {CubeClass(size, location), CubeClass(size, location)};
+    for(int i = 0; i < num; i++)
+    {
+        for(int j = 0; j < num; j++)
+        {
+            for(int k = 0; k < num; k++)
+            {
+                spaces[i][j][k] = 0;
+            }
+        }
+    }
+
+    spaces[0][0][0] = 1;    //Player cube at 0,0,0
 
     al_start_timer(timer);
     while(1)
@@ -75,62 +98,99 @@ int main()
         {
             switch(event.keyboard.keycode)
             {
-                case ALLEGRO_KEY_S:
+                case ALLEGRO_KEY_SPACE:
                 {
-                    cube.Translate({0,0,-1*speed});
-                    if(cube.GetLocation().position.z < 0)
+                    spaces[playerX][playerY][playerZ] = 2;
+                }
+                break;
+
+                case ALLEGRO_KEY_S:
+                { 
+                    if((playerZ > 0) && (spaces[playerX][playerY][playerZ - 1] != 2))
                     {
-                        cube.SetPositionZ(0);
-                    }
+                        playerZ--;
+                        spaces[playerX][playerY][playerZ] = 1;
+                        cube.Translate({0,0,-1*speed});
+                        if(cube.GetLocation().position.z < 0)
+                        {
+                            cube.SetPositionZ(0);
+                        }
+                    } 
                 }
                 break;
 
                 case ALLEGRO_KEY_W:
                 {
-                    cube.Translate({0,0,1*speed});
-                    if(cube.GetLocation().position.z > MAX-size)
+                    if((playerZ < num-1) && (spaces[playerX][playerY][playerZ + 1] != 2))
                     {
-                        cube.SetPositionZ(MAX-size);
+                        playerZ++;
+                        spaces[playerX][playerY][playerZ] = 1;
+                        cube.Translate({0,0,1*speed});
+                        if(cube.GetLocation().position.z > MAX-size)
+                        {
+                            cube.SetPositionZ(MAX-size);
+                        }
                     }
+                    
                 }
                 break;
 
                 case ALLEGRO_KEY_A:
                 {
-                    cube.Translate({-1*speed,0,0});
-                    if(cube.GetLocation().position.x < 0)
+                    if((playerX > 0) && (spaces[playerX - 1][playerY][playerZ] != 2))
                     {
-                        cube.SetPositionX(0);
+                        playerX--;
+                        spaces[playerX][playerY][playerZ] = 1;
+                        cube.Translate({-1*speed,0,0});
+                        if(cube.GetLocation().position.x < 0)
+                        {
+                            cube.SetPositionX(0);
+                        }
                     }
                 }
                 break;
 
                 case ALLEGRO_KEY_D:
                 {
-                    cube.Translate({1*speed,0,0});
-                    if(cube.GetLocation().position.x > MAX-size)
+                    if((playerX < num-1) && (spaces[playerX + 1][playerY][playerZ] != 2))
                     {
-                        cube.SetPositionX(MAX-size);
+                        playerX++;
+                        spaces[playerX][playerY][playerZ] = 1;
+                        cube.Translate({1*speed,0,0});
+                        if(cube.GetLocation().position.x > MAX-size)
+                        {
+                            cube.SetPositionX(MAX-size);
+                        }
                     }
                 }
                 break;
 
                 case ALLEGRO_KEY_DOWN:
                 {
-                    cube.Translate({0,-1*speed,0});
-                    if(cube.GetLocation().position.y < 0)
+                    if((playerY > 0) && (spaces[playerX][playerY - 1][playerZ] != 2))
                     {
-                        cube.SetPositionY(0);
+                        playerY--;
+                        spaces[playerX][playerY][playerZ] = 1;
+                        cube.Translate({0,-1*speed,0});
+                        if(cube.GetLocation().position.y < 0)
+                        {
+                            cube.SetPositionY(0);
+                        }
                     }
                 }
                 break;
 
                 case ALLEGRO_KEY_UP:
                 {
-                    cube.Translate({0,1*speed,0});
-                    if(cube.GetLocation().position.y > MAX-size)
+                    if((playerY < num-1) && (spaces[playerX][playerY + 1][playerZ] != 2))
                     {
-                        cube.SetPositionY(MAX-size);
+                        playerY++;
+                        spaces[playerX][playerY][playerZ] = 1;
+                        cube.Translate({0,1*speed,0});
+                        if(cube.GetLocation().position.y > MAX-size)
+                        {
+                            cube.SetPositionY(MAX-size);
+                        }
                     }
                 }
                 break;
@@ -170,7 +230,7 @@ int main()
 
             drawGrid();
 
-            drawCube(cube);
+            drawCubes();
 
             al_flip_display();
 
@@ -191,15 +251,15 @@ void drawGrid()
     //AXES
     float axis_x = 0.5*((float)MAX)*cos(alpha);
     float axis_y = 0.5*((float)MAX)*sin(alpha);
-    al_draw_line(0, height, MAX, height, BLACK,thickness*2);
-    al_draw_line(0, height, axis_x, height - axis_y, BLACK,thickness*2);
-    al_draw_line(0, height, 0, height - MAX, BLACK,thickness*2);
+    al_draw_line(0, height, MAX, height, BLACK, thickness*2);
+    al_draw_line(0, height, axis_x, height - axis_y, BLACK, thickness*2);
+    al_draw_line(0, height, 0, height - MAX, BLACK, thickness*2);
 
     //Grid
     float loc = size;
     while(loc <= MAX)
     {
-        al_draw_line(loc, height, axis_x + loc, height - axis_y, BLACK,0);
+        al_draw_line(loc, height, axis_x + loc, height - axis_y, BLACK, 0);
         loc += size;
     }
 
@@ -207,13 +267,77 @@ void drawGrid()
     float locY = height - 0.5*(size)*sin(alpha);
     while(locY >= (height - axis_y - (0.01 * axis_y)))
     {
-        al_draw_line(locX, locY, locX + MAX, locY, BLACK,0);
+        al_draw_line(locX, locY, locX + MAX, locY, BLACK, 0);
         locX += 0.5*(size)*cos(alpha);
         locY -= 0.5*(size)*sin(alpha);
     }
 }
 
-void drawCube(CubeClass cube)
+void drawPlacedCube(CubeClass cube)
+{
+    Location loc = cube.GetLocation();
+    Point *points3D = cube.GetVertices();
+    Line *edges = cube.GetEdges();
+
+    //Initialize 2D points array
+    Point points2D[8];
+    for (int i = 0; i < 8; ++i)
+    {
+        points2D[i] = {0,height,0}; //We will just ignore the Z value when thinking in 2D, only x and y
+    }
+
+    //convert 3D points into 2D points
+    for (int i = 0; i < 8; ++i)
+    {
+        points2D[i].x = points3D[i].x + 0.5*(points3D[i].z)*cos(alpha);
+        points2D[i].y = points3D[i].y + 0.5*(points3D[i].z)*sin(alpha);
+    }
+
+    float points1[8] = { (float)points2D[0].x, (float)(height - points2D[0].y), (float)points2D[1].x, (float)(height - points2D[1].y), (float)points2D[3].x, (float)(height - points2D[3].y), (float)points2D[2].x, (float)(height - (float)points2D[2].y) };
+    al_draw_filled_polygon(points1, 4, LIGHT_GREEN);
+
+    float points2[8] = { (float)points2D[1].x, (float)(height - points2D[1].y), (float)points2D[5].x, (float)(height - points2D[5].y), (float)points2D[7].x, (float)(height - points2D[7].y), (float)points2D[3].x, (float)(height - (float)points2D[3].y) };
+    al_draw_filled_polygon(points2, 4, MEDIUM_GREEN);
+
+    float points3[8] = { (float)points2D[2].x, (float)(height - points2D[2].y), (float)points2D[3].x, (float)(height - points2D[3].y), (float)points2D[7].x, (float)(height - points2D[7].y), (float)points2D[6].x, (float)(height - (float)points2D[6].y) };
+    al_draw_filled_polygon(points3, 4, DARK_GREEN);
+
+    //plot edges between 2D points
+    for (int i = 0; i < 12; ++i)
+    {
+        if(i != 2 && i != 8 && i != 9)
+        {
+            al_draw_line(points2D[edges[i].pointA].x, (height - points2D[edges[i].pointA].y), points2D[edges[i].pointB].x, (height - points2D[edges[i].pointB].y), LIME_GREEN, thickness);
+        }   
+    }
+}
+
+void drawCubes()
+{
+    for(int i = 0; i < num; i++)
+    {
+        for(int j = 0; j < num; j++)
+        {
+            for(int k = num-1; k >= 0; k--)
+            {
+                if(spaces[i][j][k] == 1)
+                {
+                    drawPlayerCube();
+                }
+                else if(spaces[i][j][k] == 2)
+                {
+                    Angle thisAngle = {0, 0, 0};
+                    Point thisStart = {size*i, size*j, size*k};
+                    Location thisLocation = {thisStart, thisAngle};
+                    CubeClass thisCube(size, thisLocation);
+                    drawPlacedCube(thisCube);
+                }
+            }
+        }
+    }
+}
+
+void drawPlayerCube()
 {
     Location loc = cube.GetLocation();
     Point *points3D = cube.GetVertices();
