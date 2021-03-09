@@ -11,6 +11,9 @@
 
 #define BLACK           al_map_rgb(0, 0, 0)
 #define WHITE           al_map_rgb(255, 255, 255)
+#define LIGHT_GREY      al_map_rgb(200, 200, 200)
+#define MEDIUM_GREY     al_map_rgb(150, 150, 150)
+#define DARK_GREY       al_map_rgb(100, 100, 100)
 #define LIME_GREEN      al_map_rgb(0, 255, 0)
 #define LIGHT_GREEN     al_map_rgb(0, 200, 0)
 #define MEDIUM_GREEN    al_map_rgb(0, 150, 0)
@@ -22,13 +25,15 @@ void drawGrid();
 void drawCubes();
 void drawPlacedCube(CubeClass cube);
 void drawPlayerCube();
+void drawMenu();
 
-const int size = 80;
-const int num = 5;
+const int size = 60;
+const int num = 10;
 
 const int MAX = size * num;
 const int height = MAX + MAX/2;
 const int width = MAX + MAX/2;
+const int menu = width/4;
 const int speed = size;
 const int thickness = 4;
 
@@ -62,7 +67,7 @@ int main()
 
     ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
-    ALLEGRO_DISPLAY* disp = al_create_display(width, height);
+    ALLEGRO_DISPLAY* disp = al_create_display(width + menu, height);
     ALLEGRO_FONT* font = al_create_builtin_font();
 
     al_register_event_source(queue, al_get_keyboard_event_source());
@@ -100,7 +105,23 @@ int main()
             {
                 case ALLEGRO_KEY_SPACE:
                 {
-                    spaces[playerX][playerY][playerZ] = 2;
+                    for(int i = 0; i < num; i++)
+                    {
+                        for(int j = 0; j < num; j++)
+                        {
+                            for(int k = 0; k < num; k++)
+                            {
+                                spaces[i][j][k] = 0;
+                            }
+                        }
+                    }
+
+                    spaces[0][0][0] = 1;    //Player cube at 0,0,0
+                    playerX = 0;
+                    playerY = 0;
+                    playerZ = 0;
+                    cube.SetPosition(start);
+
                 }
                 break;
 
@@ -108,6 +129,7 @@ int main()
                 { 
                     if((playerZ > 0) && (spaces[playerX][playerY][playerZ - 1] != 2))
                     {
+                        spaces[playerX][playerY][playerZ] = 2;
                         playerZ--;
                         spaces[playerX][playerY][playerZ] = 1;
                         cube.Translate({0,0,-1*speed});
@@ -123,6 +145,7 @@ int main()
                 {
                     if((playerZ < num-1) && (spaces[playerX][playerY][playerZ + 1] != 2))
                     {
+                        spaces[playerX][playerY][playerZ] = 2;
                         playerZ++;
                         spaces[playerX][playerY][playerZ] = 1;
                         cube.Translate({0,0,1*speed});
@@ -139,6 +162,7 @@ int main()
                 {
                     if((playerX > 0) && (spaces[playerX - 1][playerY][playerZ] != 2))
                     {
+                        spaces[playerX][playerY][playerZ] = 2;
                         playerX--;
                         spaces[playerX][playerY][playerZ] = 1;
                         cube.Translate({-1*speed,0,0});
@@ -154,6 +178,7 @@ int main()
                 {
                     if((playerX < num-1) && (spaces[playerX + 1][playerY][playerZ] != 2))
                     {
+                        spaces[playerX][playerY][playerZ] = 2;
                         playerX++;
                         spaces[playerX][playerY][playerZ] = 1;
                         cube.Translate({1*speed,0,0});
@@ -169,6 +194,7 @@ int main()
                 {
                     if((playerY > 0) && (spaces[playerX][playerY - 1][playerZ] != 2))
                     {
+                        spaces[playerX][playerY][playerZ] = 2;
                         playerY--;
                         spaces[playerX][playerY][playerZ] = 1;
                         cube.Translate({0,-1*speed,0});
@@ -184,6 +210,7 @@ int main()
                 {
                     if((playerY < num-1) && (spaces[playerX][playerY + 1][playerZ] != 2))
                     {
+                        spaces[playerX][playerY][playerZ] = 2;
                         playerY++;
                         spaces[playerX][playerY][playerZ] = 1;
                         cube.Translate({0,1*speed,0});
@@ -231,6 +258,8 @@ int main()
             drawGrid();
 
             drawCubes();
+
+            drawMenu();
 
             al_flip_display();
 
@@ -294,20 +323,20 @@ void drawPlacedCube(CubeClass thisCube)
     }
 
     float points1[8] = { (float)points2D[0].x, (float)(height - points2D[0].y), (float)points2D[1].x, (float)(height - points2D[1].y), (float)points2D[3].x, (float)(height - points2D[3].y), (float)points2D[2].x, (float)(height - (float)points2D[2].y) };
-    al_draw_filled_polygon(points1, 4, LIGHT_GREEN);
+    al_draw_filled_polygon(points1, 4, LIGHT_GREY);
 
     float points2[8] = { (float)points2D[1].x, (float)(height - points2D[1].y), (float)points2D[5].x, (float)(height - points2D[5].y), (float)points2D[7].x, (float)(height - points2D[7].y), (float)points2D[3].x, (float)(height - (float)points2D[3].y) };
-    al_draw_filled_polygon(points2, 4, MEDIUM_GREEN);
+    al_draw_filled_polygon(points2, 4, MEDIUM_GREY);
 
     float points3[8] = { (float)points2D[2].x, (float)(height - points2D[2].y), (float)points2D[3].x, (float)(height - points2D[3].y), (float)points2D[7].x, (float)(height - points2D[7].y), (float)points2D[6].x, (float)(height - (float)points2D[6].y) };
-    al_draw_filled_polygon(points3, 4, DARK_GREEN);
+    al_draw_filled_polygon(points3, 4, DARK_GREY);
 
     //plot edges between 2D points
     for (int i = 0; i < 12; ++i)
     {
         if(i != 2 && i != 8 && i != 9)
         {
-            al_draw_line(points2D[edges[i].pointA].x, (height - points2D[edges[i].pointA].y), points2D[edges[i].pointB].x, (height - points2D[edges[i].pointB].y), LIME_GREEN, thickness);
+            al_draw_line(points2D[edges[i].pointA].x, (height - points2D[edges[i].pointA].y), points2D[edges[i].pointB].x, (height - points2D[edges[i].pointB].y), BLACK, thickness);
         }   
     }
 }
@@ -412,4 +441,9 @@ void drawPlayerCube()
         float points4[8] = { (float)pointsProjection2D[0].x, (float)(height - pointsProjection2D[0].y), (float)pointsProjection2D[1].x, (float)(height - pointsProjection2D[1].y), (float)pointsProjection2D[3].x, (float)(height - pointsProjection2D[3].y), (float)pointsProjection2D[2].x, (float)(height - (float)pointsProjection2D[2].y) };
         al_draw_filled_polygon(points4, 4, DARK_GREEN);
     }
+}
+
+void drawMenu()
+{
+    al_draw_line(width, 0, width, height, BLACK, thickness*2);
 }
